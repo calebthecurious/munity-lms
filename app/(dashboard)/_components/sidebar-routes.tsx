@@ -20,7 +20,7 @@ const learnerRoutes = [
 const guideRoutes = [
     {
         icon: List,
-        label: "Courses",
+        label: "Skills",
         href: "/guide/skills",
     },
     {
