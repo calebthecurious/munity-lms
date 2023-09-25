@@ -21,7 +21,7 @@ export async function POST(
         });
 
         return NextResponse.json(skill);
-
+        
     } catch (error) {
         console.log("[SKILLS]", error);
         return new NextResponse("Internal Error", { status: 500})
