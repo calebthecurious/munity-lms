@@ -9,6 +9,7 @@ import { IconBadge } from "@/components/icon-badge";
 import { TitleForm } from "./_components/title-form"
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
+import { CategoryForm } from "./_components/category-form.tsx";
 
 const SkillPage = async ({
     params
@@ -25,6 +26,12 @@ const SkillPage = async ({
         where: {
             id: params.skillId,
         }
+    });
+
+    const categories = await db.category.findMany({
+        orderBy: {
+            name: "asc"
+        },
     });
 
     if (!skill) {
@@ -75,6 +82,14 @@ const SkillPage = async ({
                     <ImageForm
                         initialData={skill}
                         skillId={skill.id}
+                    />
+                    <CategoryForm
+                        initialData={skill}
+                        skillId={skill.id}
+                        options={categories.map((category) => ({
+                            label: category.name,
+                            value: category.id,
+                        }))}
                     />
                 </div>
             </div>
