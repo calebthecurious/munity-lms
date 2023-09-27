@@ -4,7 +4,7 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 // import { isGuide } from "@/lib/guide";
  
 const f = createUploadthing();
-    
+        
     const handleAuth = () => {
     const { userId } = auth();
     // const isAuthorized = isGuide(userId);
