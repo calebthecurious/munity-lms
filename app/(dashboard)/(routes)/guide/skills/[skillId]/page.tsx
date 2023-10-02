@@ -12,6 +12,7 @@ import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form.tsx";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
+import { ChaptersForm } from "./_components/chapters-form";
 
 const SkillPage = async ({
     params
@@ -27,8 +28,14 @@ const SkillPage = async ({
     const skill = await db.skill.findUnique({
         where: {
             id: params.skillId,
+            userId
         },
         include: {
+            chapters: {
+                orderBy: {
+                    position: "asc",
+                },
+            },
             attachments: {
                 orderBy: {
                     createdAt: "desc",
@@ -54,6 +61,7 @@ const SkillPage = async ({
         skill.imageUrl,
         skill.price,
         skill.categoryId,
+        skill.chapters.some(chapter => chapter.isPublished),
     ];
 
     const totalFields = requiredFields.length;
@@ -110,9 +118,10 @@ const SkillPage = async ({
                                 Skill Chapters
                             </h2>
                         </div>
-                        <div>
-                            TODO: Chapters
-                        </div>
+                        <ChaptersForm
+                            initialData={skill}
+                            skillId={skill.id}
+            />
                     </div>
                     <div>
                         <div className="flex items-center gap-x-2">
