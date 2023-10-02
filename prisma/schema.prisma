@@ -42,8 +42,8 @@ model Attachment {
   skillId String
   skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
 
-  created DateTime @default(now())
-  updated DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([skillId])
 }

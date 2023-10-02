@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs";
-import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
+import { CircleDollarSign, LayoutDashboard, ListChecks, File } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
@@ -11,6 +11,7 @@ import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form.tsx";
 import { PriceForm } from "./_components/price-form";
+import { AttachmentForm } from "./_components/attachment-form";
 
 const SkillPage = async ({
     params
@@ -26,11 +27,19 @@ const SkillPage = async ({
     const skill = await db.skill.findUnique({
         where: {
             id: params.skillId,
+        },
+        include: {
+            attachments: {
+                orderBy: {
+                    createdAt: "desc",
+                }
+            }
         }
     });
 
     const categories = await db.category.findMany({
         orderBy: {
+      
             name: "asc"
         },
     });
@@ -105,17 +114,30 @@ const SkillPage = async ({
                             TODO: Chapters
                         </div>
                     </div>
-                    <div className="flex items-center gap-x-2">
-                        <IconBadge icon={CircleDollarSign} />
+                    <div>
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge icon={CircleDollarSign} />
+                            <h2 className="text-xl">
+                                Share your skills
+                            </h2>
+                        </div>
+                        <PriceForm
+                            initialData={skill}
+                            skillId={skill.id}
+                        />   
+                    </div>             
+                    <div className="flex items-center-gap-x-2">
+                        <IconBadge icon={File} />
                         <h2 className="text-xl">
-                            Share your skills
+                            Resources & Attachments
                         </h2>
                     </div>
-                    <PriceForm
+                    <AttachmentForm
                         initialData={skill}
                         skillId={skill.id}
                     />
                 </div>
+
             </div>
         </div>
     );
