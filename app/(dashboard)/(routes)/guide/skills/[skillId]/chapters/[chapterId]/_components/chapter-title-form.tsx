@@ -32,7 +32,7 @@ const formSchema = z.object({
     title: z.string().min(1)
 });
 
-export const CHapterTitleForm = ({
+export const ChapterTitleForm = ({
     initialData,
     skillId,
     chapterId,

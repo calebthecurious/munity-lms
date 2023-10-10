@@ -1,17 +1,20 @@
-import { IconBadge } from "@/components/icon-badge";
-import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
-import { ArrowLeft, LayoutDashboard } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CHapterTitleForm } from "./_components/chapter-title-form";
+import Link from "next/link";
+import { ArrowLeft, LayoutDashboard } from "lucide-react";
+
+import { db } from "@/lib/db";
+import { IconBadge } from "@/components/icon-badge";
+
+import { ChapterTitleForm } from "./_components/chapter-title-form";
+import { ChapterDescriptionForm } from "./_components/chapter-description-form";
 
 const ChapterIdPage = async ({
     params
 }: {
     params: { skillId: string; chapterId: string }
 }) => {
-    const { userId } =auth();
+    const { userId } = auth();
 
     if (!userId ) {
         return redirect("/");
@@ -41,6 +44,8 @@ const totalFields = requiredFields.length;
 const completedFields = requiredFields.filter(Boolean).length;
 
 const completionText = `(${completedFields}/${totalFields})`;
+
+const isComplete = requiredFields.every(Boolean);
 
     return ( 
         <div className="p-6">
@@ -75,7 +80,12 @@ const completionText = `(${completedFields}/${totalFields})`;
                                 Customize your chapter 
                             </h2>
                         </div>
-                        <CHapterTitleForm
+                        <ChapterTitleForm
+                            initialData={chapter}
+                            skillId={params.skillId}
+                            chapterId={params.chapterId}
+                        />
+                        <ChapterDescriptionForm
                             initialData={chapter}
                             skillId={params.skillId}
                             chapterId={params.chapterId}
