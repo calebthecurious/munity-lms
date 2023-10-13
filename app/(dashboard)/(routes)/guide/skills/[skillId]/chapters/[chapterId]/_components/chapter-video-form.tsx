@@ -99,7 +99,7 @@ export const ChapterVideoForm = ({
             <div className="text-xs text-muted-foreground mt-2">
             Videos can take a few minutes to process. Refresh the page if video does not appear.
             </div>
-        )}
+        )} 
         </div>
     )
 }
