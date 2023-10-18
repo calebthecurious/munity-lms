@@ -19,38 +19,25 @@ export async function PATCH(
         id: params.skillId,
         userId,
       },
-      include: {
-        chapters: {
-          include: {
-            muxData: true,
-          }
-        }
-      }
     });
 
     if (!skill) {
       return new NextResponse("Not found", { status: 404 });
     }
 
-    const hasPublishedChapter = skill.chapters.some((chapter) => chapter.isPublished);
-
-    if (!skill.title || !skill.description || !skill.imageUrl || !skill.categoryId || !hasPublishedChapter) {
-      return new NextResponse("Missing required fields", { status: 401 });
-    }
-
-    const publishedSkill = await db.skill.update({
+    const unpublishedSkill = await db.skill.update({
       where: {
         id: params.skillId,
         userId,
       },
       data: {
-        isPublished: true,
+        isPublished: false,
       }
     });
 
-    return NextResponse.json(publishedSkill);
+    return NextResponse.json(unpublishedSkill);
   } catch (error) {
-    console.log("[CHAPTER_PUBLISH]", error);
+    console.log("[SKILL_ID_UNPUBLISH]", error);
     return new NextResponse("Internal Error", { status: 500 });
   } 
 }

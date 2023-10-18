@@ -50,7 +50,7 @@ export async function PATCH(
 
     return NextResponse.json(publishedSkill);
   } catch (error) {
-    console.log("[CHAPTER_PUBLISH]", error);
+    console.log("[SKILL_ID_PUBLISH]", error);
     return new NextResponse("Internal Error", { status: 500 });
   } 
 }

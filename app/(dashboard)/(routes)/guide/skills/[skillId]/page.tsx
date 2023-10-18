@@ -13,6 +13,8 @@ import { CategoryForm } from "./_components/category-form.tsx";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
 import { ChaptersForm } from "./_components/chapters-form";
+import { Banner } from "@/components/banner";
+import { Actions } from "./_components/actions";
 
 const SkillPage = async ({
     params
@@ -69,86 +71,99 @@ const SkillPage = async ({
 
     const completionText = `(${completedFields}/${totalFields})`
 
+    const isComplete = requiredFields.every(Boolean);
+
     return (
-        <div className="p-6">
-            <div className="flex items-center justify-between">
-                <div className="flex flex-col gap-y-2">
-                    <h1 className="text-2xl font-medium">
-                        Skill Setup
-                    </h1>
-                    <span className="text-sm text-slate-700">
-                        Complete all fields {completionText}
-                    </span>
-                </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-                <div className="">
-                    <div className="flex items-center gap-x-2">
-                        <IconBadge icon={LayoutDashboard} />
-                        <h2 className="text-xl">
-                            Customize your skill
-                        </h2>
+        <>
+        {!skill.isPublished && (
+            <Banner 
+                label="This skill is not published. It will not be visible to learners"
+            />
+        )}
+            <div className="p-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-y-2">
+                        <h1 className="text-2xl font-medium">
+                            Skill Setup
+                        </h1>
+                        <span className="text-sm text-slate-700">
+                            Complete all fields {completionText}
+                        </span>
                     </div>
-                    <TitleForm
-                        initialData={skill}
-                        skillId={skill.id}
-                    />
-                    <DescriptionForm
-                        initialData={skill}
-                        skillId={skill.id}
-                    />
-                    <ImageForm
-                        initialData={skill}
-                        skillId={skill.id}
-                    />
-                    <CategoryForm
-                        initialData={skill}
-                        skillId={skill.id}
-                        options={categories.map((category) => ({
-                            label: category.name,
-                            value: category.id,
-                        }))}
+                    <Actions 
+                        disabled={!isComplete}
+                        skillId={params.skillId}
+                        isPublished={skill.isPublished}
                     />
                 </div>
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                     <div className="">
                         <div className="flex items-center gap-x-2">
-                            <IconBadge icon={ListChecks} />
-                            <h2 className="text-wl">
-                                Skill Chapters
-                            </h2>
-                        </div>
-                        <ChaptersForm
-                            initialData={skill}
-                            skillId={skill.id}
-            />
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-x-2">
-                            <IconBadge icon={CircleDollarSign} />
+                            <IconBadge icon={LayoutDashboard} />
                             <h2 className="text-xl">
-                                Share your skills
+                                Customize your skill
                             </h2>
                         </div>
-                        <PriceForm
+                        <TitleForm
                             initialData={skill}
                             skillId={skill.id}
-                        />   
-                    </div>             
-                    <div className="flex items-center-gap-x-2">
-                        <IconBadge icon={File} />
-                        <h2 className="text-xl">
-                            Resources & Attachments
-                        </h2>
+                        />
+                        <DescriptionForm
+                            initialData={skill}
+                            skillId={skill.id}
+                        />
+                        <ImageForm
+                            initialData={skill}
+                            skillId={skill.id}
+                        />
+                        <CategoryForm
+                            initialData={skill}
+                            skillId={skill.id}
+                            options={categories.map((category) => ({
+                                label: category.name,
+                                value: category.id,
+                            }))}
+                        />
                     </div>
-                    <AttachmentForm
-                        initialData={skill}
-                        skillId={skill.id}
-                    />
+                    <div className="space-y-6">
+                        <div className="">
+                            <div className="flex items-center gap-x-2">
+                                <IconBadge icon={ListChecks} />
+                                <h2 className="text-wl">
+                                    Skill Chapters
+                                </h2>
+                            </div>
+                            <ChaptersForm
+                                initialData={skill}
+                                skillId={skill.id}
+                />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-x-2">
+                                <IconBadge icon={CircleDollarSign} />
+                                <h2 className="text-xl">
+                                    Share your skills
+                                </h2>
+                            </div>
+                            <PriceForm
+                                initialData={skill}
+                                skillId={skill.id}
+                            />   
+                        </div>             
+                        <div className="flex items-center-gap-x-2">
+                            <IconBadge icon={File} />
+                            <h2 className="text-xl">
+                                Resources & Attachments
+                            </h2>
+                        </div>
+                        <AttachmentForm
+                            initialData={skill}
+                            skillId={skill.id}
+                        />
+                    </div>
                 </div>
-
             </div>
-        </div>
+        </>
     );
 }
 
