@@ -1,18 +1,32 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link"
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
-const SkillsPage = () => {
-    return (
-        <div className="">
-            <div className="p-6">
-                <Link href="/guide/create">
-                    <Button>
-                        New Skill
-                    </Button>
-                </Link>
-            </div>
-        </div>
-    )
+import { db } from "@/lib/db";
+
+import { DataTable } from "./_components/data-table";
+import { columns } from "./_components/columns";
+
+const SkillsPage = async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    return redirect("/");
+  }
+
+  const skills = await db.skill.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      created: "desc",
+    },
+  });
+
+  return ( 
+    <div className="p-6">
+      <DataTable columns={columns} data={skills} />
+    </div>
+   );
 }
-
+ 
 export default SkillsPage;
