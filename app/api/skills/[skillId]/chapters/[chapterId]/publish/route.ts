@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { skillId: string } }
+  { params }: { params: { skillId: string; chapterId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -14,43 +14,47 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const skill = await db.skill.findUnique({
+    const ownSkill = await db.skill.findUnique({
       where: {
         id: params.skillId,
-        userId,
-      },
-      include: {
-        chapters: {
-          include: {
-            muxData: true,
-          }
-        }
+        userId
       }
     });
 
-    if (!skill) {
-      return new NextResponse("Not found", { status: 404 });
+    if (!ownSkill) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const hasPublishedChapter = skill.chapters.some((chapter) => chapter.isPublished);
-
-    if (!skill.title || !skill.description || !skill.imageUrl || !skill.categoryId || !hasPublishedChapter) {
-      return new NextResponse("Missing required fields", { status: 401 });
-    }
-
-    const publishedSkill = await db.skill.update({
+    const chapter = await db.chapter.findUnique({
       where: {
-        id: params.skillId,
-        userId,
+        id: params.chapterId,
+        skillId: params.skillId,
+      }
+    });
+
+    const muxData = await db.muxData.findUnique({
+      where: {
+        chapterId: params.chapterId,
+      }
+    });
+
+    if (!chapter || !muxData || !chapter.title || !chapter.description || !chapter.videoUrl) {
+      return new NextResponse("Missing required fields", { status: 400 });
+    }
+
+    const publishedChapter = await db.chapter.update({
+      where: {
+        id: params.chapterId,
+        skillId: params.skillId,
       },
       data: {
         isPublished: true,
       }
     });
 
-    return NextResponse.json(publishedSkill);
+    return NextResponse.json(publishedChapter);
   } catch (error) {
     console.log("[CHAPTER_PUBLISH]", error);
-    return new NextResponse("Internal Error", { status: 500 });
-  } 
+    return new NextResponse("Internal Error", { status: 500 }); 
+  }
 }
