@@ -12,7 +12,7 @@ import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 interface VideoPlayerProps {
   playbackId: string;
-  courseId: string;
+  skillId: string;
   chapterId: string;
   nextChapterId?: string;
   isLocked: boolean;
@@ -22,7 +22,7 @@ interface VideoPlayerProps {
 
 export const VideoPlayer = ({
   playbackId,
-  courseId,
+  skillId,
   chapterId,
   nextChapterId,
   isLocked,
@@ -36,7 +36,7 @@ export const VideoPlayer = ({
   const onEnd = async () => {
     try {
       if (completeOnEnd) {
-        await axios.put(`/api/courses/${courseId}/chapters/${chapterId}/progress`, {
+        await axios.put(`/api/skills/${skillId}/chapters/${chapterId}/progress`, {
           isCompleted: true,
         });
 
@@ -48,7 +48,7 @@ export const VideoPlayer = ({
         router.refresh();
 
         if (nextChapterId) {
-          router.push(`/courses/${courseId}/chapters/${nextChapterId}`)
+          router.push(`/skills/${skillId}/chapters/${nextChapterId}`)
         }
       }
     } catch {

@@ -8,6 +8,7 @@ import { SkillEnrollButton } from "./_components/skill-enroll-button";
 import { Separator } from "@/components/ui/separator";
 import { Preview } from "@/components/preview";
 import { File } from "lucide-react";
+import { SkillProgressButton } from "./_components/skill-progress-button";
 
 const ChapterIdPage = async ({
     params
@@ -73,10 +74,13 @@ const ChapterIdPage = async ({
                             {chapter.title}
                         </h2>
                         {purchase ? (
-                        <div>
-                            {}
-                        </div>
-                        ): (
+                            <SkillProgressButton
+                                chapterId={params.chapterId}
+                                skillId={params.skillId}
+                                nextChapterId={nextChapter?.id}
+                                isCompleted={!!userProgress?.isCompleted}
+                            />
+                        ) : (
                             <SkillEnrollButton
                                 skillId={params.skillId}
                                 price={skill.price!}
