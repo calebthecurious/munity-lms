@@ -28,7 +28,7 @@ export default async function Dashboard() {
           />
           <InfoCard 
             icon={CheckCircle}
-            label="In Completed"
+            label="Completed!"
             numberOfItems={skillsInProgress.length}
             variant="success"
           />

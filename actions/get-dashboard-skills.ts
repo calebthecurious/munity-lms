@@ -49,7 +49,7 @@ export const getDashboardSkills = async (userId: string): Promise<DashboardSkill
       skillsInProgress,
     }
   } catch (error) {
-    console.log("[GET_DASHBOARD_COURSES]", error);
+    console.log("[GET_DASHBOARD_SKILLS]", error);
     return {
       completedSkills: [],
       skillsInProgress: [],
