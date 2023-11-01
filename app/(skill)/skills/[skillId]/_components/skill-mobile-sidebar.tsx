@@ -1,5 +1,5 @@
 import { Menu } from "lucide-react";
-import { Chapter, Skill, UserProgress } from "@prisma/client";
+import { Lesson, Skill, UserProgress } from "@prisma/client";
 
 import {
   Sheet,
@@ -11,7 +11,7 @@ import { SkillSidebar } from "./skill-sidebar";
 
 interface SkillMobileSidebarProps {
   skill: Skill & {
-    chapters: (Chapter & {
+    lessons: (Lesson & {
       userProgress: UserProgress[] | null;
     })[];
   };

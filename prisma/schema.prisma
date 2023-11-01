@@ -21,7 +21,7 @@ model Skill {
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
 
-  chapters    Chapter[]
+  lessons     Lesson[]
   attachments Attachment[]
   purchases   Purchase[]
 
@@ -52,7 +52,7 @@ model Attachment {
   @@index([skillId])
 }
 
-model Chapter {
+model Lesson {
   id          String  @id @default(uuid())
   title       String
   description String? @db.Text
@@ -79,24 +79,24 @@ model MuxData {
   assetId    String
   playbackId String?
 
-  chapterId String  @unique
-  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  lessonId String @unique
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 }
 
 model UserProgress {
   id     String @id @default(uuid())
   userId String
 
-  chapterId String
-  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   isCompleted Boolean @default(false)
 
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, chapterId])
-  @@index([chapterId])
+  @@unique([userId, lessonId])
+  @@index([lessonId])
 }
 
 model Purchase {

@@ -8,35 +8,38 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Lesson } from "@prisma/client";
 
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Editor } from "@/components/editor";
+import { Preview } from "@/components/preview";
+import { Checkbox } from "@/components/ui/checkbox";
 
-interface ChapterTitleFormProps {
-    initialData: {
-        title: string;
-    };
+interface LessonAccessFormProps {
+    initialData: Lesson
     skillId: string;
-    chapterId: string;  
+    lessonId: string;  
     
 };
 
 const formSchema = z.object({
-    title: z.string().min(1)
+    isFree: z.boolean().default(false)
 });
 
-export const ChapterTitleForm = ({
+export const LessonAccessForm = ({
     initialData,
     skillId,
-    chapterId,
-    }: ChapterTitleFormProps) => {
+    lessonId,
+    }: LessonAccessFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const toggleEdit = () => setIsEditing((current) => !current);
@@ -45,15 +48,17 @@ export const ChapterTitleForm = ({
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData,
+        defaultValues: {
+            isFree: !!initialData.isFree
+        },
     });
 
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-        await axios.patch(`/api/skills/${skillId}/chapters/${chapterId}`, values);
-        toast.success("Chapter updated");
+        await axios.patch(`/api/skills/${skillId}/lessons/${lessonId}`, values);
+        toast.success("Lesson updated");
         toggleEdit();
         router.refresh();
         } catch {
@@ -64,42 +69,52 @@ export const ChapterTitleForm = ({
     return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
         <div className="font-medium flex items-center justify-between">
-            Chapter title
+            Lesson access settings
             <Button onClick={toggleEdit} variant="ghost">
             {isEditing ? (
                 <>Cancel</>
             ) : (
                 <>
                 <Pencil className="h-4 w-4 mr-2" />
-                Edit title
+                Edit access
                 </>
             )}
             </Button>
         </div>
         {!isEditing && (
-            <p className="text-sm mt-2">
-            {initialData.title}
-            </p>
-        )}
+        <p className={cn(
+          "text-sm mt-2",
+          !initialData.isFree && "text-slate-500 italic"
+        )}>
+            {initialData.isFree ? (
+                <>This lesson is free</>
+            ): (
+                <>This lesson is not free</>
+            )}
+        </p>
+      )}
         {isEditing && (
             <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4 mt-4"
             >
-                <FormField
+        <FormField
                 control={form.control}
-                name="title"
+                name="isFree"
                 render={({ field }) => (
-                    <FormItem>
-                    <FormControl>
-                        <Input
-                        disabled={isSubmitting}
-                        placeholder="e.g. 'Introduction to the skill'"
-                        {...field}
-                        />
-                    </FormControl>
-                    <FormMessage />
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                            <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                            <FormDescription>
+                                Check this box if you want to make this lesson free
+                            </FormDescription>
+                        </div>
                     </FormItem>
                 )}
                 />

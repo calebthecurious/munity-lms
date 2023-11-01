@@ -9,19 +9,19 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/modals/confirm-modal";
 
-interface ChapterActionsProps {
+interface LessonActionsProps {
   disabled: boolean;
   skillId: string;
-  chapterId: string;
+  lessonId: string;
   isPublished: boolean;
 };
 
-export const ChapterActions = ({
+export const LessonActions = ({
   disabled,
   skillId,
-  chapterId,
+  lessonId,
   isPublished
-}: ChapterActionsProps) => {
+}: LessonActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,11 +30,11 @@ export const ChapterActions = ({
       setIsLoading(true);
 
       if (isPublished) {
-        await axios.patch(`/api/skills/${skillId}/chapters/${chapterId}/unpublish`);
-        toast.success("Chapter unpublished");
+        await axios.patch(`/api/skills/${skillId}/lessons/${lessonId}/unpublish`);
+        toast.success("Lesson unpublished");
       } else {
-        await axios.patch(`/api/skills/${skillId}/chapters/${chapterId}/publish`);
-        toast.success("Chapter published");
+        await axios.patch(`/api/skills/${skillId}/lessons/${lessonId}/publish`);
+        toast.success("Lesson published");
       }
 
       router.refresh();
@@ -49,9 +49,9 @@ export const ChapterActions = ({
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/skills/${skillId}/chapters/${chapterId}`);
+      await axios.delete(`/api/skills/${skillId}/lessons/${lessonId}`);
 
-      toast.success("Chapter deleted");
+      toast.success("Lesson deleted");
       router.refresh();
       router.push(`/guide/skills/${skillId}`);
     } catch {

@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-import { getChapter } from "@/actions/get-chapter";
+import { getLesson } from "@/actions/get-lesson";
 import { Banner } from "@/components/banner";
 import { VideoPlayer } from "./_components/video-player";
 import { SkillEnrollButton } from "./_components/skill-enroll-button";
@@ -10,10 +10,10 @@ import { Preview } from "@/components/preview";
 import { File } from "lucide-react";
 import { SkillProgressButton } from "./_components/skill-progress-button";
 
-const ChapterIdPage = async ({
+const LessonIdPage = async ({
     params
 }: {
-    params: {skillId: string; chapterId: string}
+    params: {skillId: string; lessonId: string}
 }) => {
     const { userId } = auth();
 
@@ -22,24 +22,24 @@ const ChapterIdPage = async ({
     } 
 
     const {
-        chapter,
+        lesson,
         skill,
         muxData,
         attachments,
-        nextChapter,
+        nextLesson,
         userProgress,
         purchase,
-    } = await getChapter({
+    } = await getLesson({
         userId,
-        chapterId: params.chapterId,
+        lessonId: params.lessonId,
         skillId: params.skillId
     })
 
-    if(!chapter || !skill) {
+    if(!lesson || !skill) {
         return redirect("/"); 
     }
 
-    const isLocked = !chapter.isFree && !purchase;
+    const isLocked = !lesson.isFree && !purchase;
     const completeOnEnd = !!purchase && !userProgress?.isCompleted;
 
     return (
@@ -59,10 +59,10 @@ const ChapterIdPage = async ({
             <div className="flex flex-col max-w-4xl mx-auto pb-20">
                 <div className="p-4">
                     <VideoPlayer
-                        chapterId={params.chapterId}
-                        title={chapter.title}
+                        lessonId={params.lessonId}
+                        title={lesson.title}
                         skillId={params.skillId}
-                        nextChapterId={nextChapter?.id}
+                        nextLessonId={nextLesson?.id}
                         playbackId={muxData?.playbackId!}
                         isLocked={isLocked}
                         completeOnEnd={completeOnEnd}
@@ -71,13 +71,13 @@ const ChapterIdPage = async ({
                 <div>
                     <div className="p-4 flex flex-col md:flex-row items-center justify-between">
                         <h2 className="text-2xl font-semibold mb-2">
-                            {chapter.title}
+                            {lesson.title}
                         </h2>
                         {purchase ? (
                             <SkillProgressButton
-                                chapterId={params.chapterId}
+                                lessonId={params.lessonId}
                                 skillId={params.skillId}
-                                nextChapterId={nextChapter?.id}
+                                nextLessonId={nextLesson?.id}
                                 isCompleted={!!userProgress?.isCompleted}
                             />
                         ) : (
@@ -89,7 +89,7 @@ const ChapterIdPage = async ({
                     </div>
                     <Separator />
                     <div>
-                        <Preview value={chapter.description!} />
+                        <Preview value={lesson.description!} />
                     </div>
                     {!!attachments.length && (
                         <>
@@ -117,4 +117,4 @@ const ChapterIdPage = async ({
     );
 }
 
-export default ChapterIdPage;
+export default LessonIdPage;

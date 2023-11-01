@@ -10,7 +10,7 @@ interface SkillCardProps {
     id: string;
     title: string;
     imageUrl: string;
-    chaptersLength: number;
+    lessonsLength: number;
     price: number;
     progress: number | null;
     category: string;
@@ -20,7 +20,7 @@ export const SkillCard = ({
     id,
     title,
     imageUrl,
-    chaptersLength,
+    lessonsLength,
     price,
     progress,
     category
@@ -47,7 +47,7 @@ export const SkillCard = ({
                 <div className="flex items-center gap-x-1 text-slate-500">
                 <IconBadge size="sm" icon={BookOpen} />
                 <span>
-                    {chaptersLength} {chaptersLength === 1 ? "Chapter" : "Chapters"}
+                    {lessonsLength} {lessonsLength === 1 ? "Lesson" : "Lessons"}
                 </span>
                 </div>
             </div>

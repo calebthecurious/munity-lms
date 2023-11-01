@@ -7,27 +7,27 @@ import { Pencil, PlusCircle, Video } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Chapter, MuxData } from "@prisma/client";
+import { Lesson, MuxData } from "@prisma/client";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
 
-interface ChapterVideoFormProps {
-    initialData: Chapter & { muxData?: MuxData | null };
+interface LessonVideoFormProps {
+    initialData: Lesson & { muxData?: MuxData | null };
     skillId: string;
-    chapterId: string;
+    lessonId: string;
 };
 
 const formSchema = z.object({
   videoUrl: z.string().min(1),
 });
 
-export const ChapterVideoForm = ({
+export const LessonVideoForm = ({
   initialData,
   skillId,
-  chapterId,
-}: ChapterVideoFormProps) => {
+  lessonId,
+}: LessonVideoFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -36,8 +36,8 @@ export const ChapterVideoForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-        await axios.patch(`/api/skills/${skillId}/chapters/${chapterId}`, values);
-        toast.success("Chapter updated");
+        await axios.patch(`/api/skills/${skillId}/lessons/${lessonId}`, values);
+        toast.success("Lesson updated");
         toggleEdit();
         router.refresh();
         } catch {
@@ -48,7 +48,7 @@ export const ChapterVideoForm = ({
     return (
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
         <div className="font-medium flex items-center justify-between">
-            Chapter video
+            Lesson video
             <Button onClick={toggleEdit} variant="ghost">
             {isEditing && (
                 <>Cancel</>
@@ -83,7 +83,7 @@ export const ChapterVideoForm = ({
         {isEditing && (
             <div>
             <FileUpload
-                endpoint="chapterVideo"
+                endpoint="lessonVideo"
                 onChange={(url) => {
                 if (url) {
                     onSubmit({ videoUrl: url });
@@ -91,7 +91,7 @@ export const ChapterVideoForm = ({
                 }}
             />
             <div className="text-xs text-muted-foreground mt-4">
-            Upload this chapter&apos;s video
+            Upload this lesson&apos;s video
             </div>
             </div>
         )}

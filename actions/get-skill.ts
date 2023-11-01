@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 
 type SkillWithProgressWithCategory = Skill & {
     category: Category | null;
-    chapters: { id: string}[];
+    lessons: { id: string}[];
     progress: number | null;
 };
 
@@ -31,7 +31,7 @@ export const getSkills = async ({
             },
             include: {
                 category: true,
-                chapters: {
+                lessons: {
                     where: {
                         isPublished: true,
                     },

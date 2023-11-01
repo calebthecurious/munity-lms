@@ -20,7 +20,7 @@ export async function PATCH(
         userId,
       },
       include: {
-        chapters: {
+        lessons: {
           include: {
             muxData: true,
           }
@@ -32,9 +32,9 @@ export async function PATCH(
       return new NextResponse("Not found", { status: 404 });
     }
 
-    const hasPublishedChapter = skill.chapters.some((chapter) => chapter.isPublished);
+    const hasPublishedLesson = skill.lessons.some((lesson) => lesson.isPublished);
 
-    if (!skill.title || !skill.description || !skill.imageUrl || !skill.categoryId || !hasPublishedChapter) {
+    if (!skill.title || !skill.description || !skill.imageUrl || !skill.categoryId || !hasPublishedLesson) {
       return new NextResponse("Missing required fields", { status: 401 });
     }
 

@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs";
-import { Chapter, Skill, UserProgress } from "@prisma/client"
+import { Lesson, Skill, UserProgress } from "@prisma/client"
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
@@ -9,7 +9,7 @@ import { SkillSidebarItem } from "./skill-sidebar-item";
 
 interface SkillSidebarProps {
   skill: Skill & {
-    chapters: (Chapter & {
+    lessons: (Lesson & {
       userProgress: UserProgress[] | null;
     })[]
   };
@@ -51,14 +51,14 @@ export const SkillSidebar = async ({
         )}
       </div>
       <div className="flex flex-col w-full">
-        {skill.chapters.map((chapter) => (
+        {skill.lessons.map((lesson) => (
           <SkillSidebarItem
-            key={chapter.id}
-            id={chapter.id}
-            label={chapter.title}
-            isCompleted={!!chapter.userProgress?.[0]?.isCompleted}
+            key={lesson.id}
+            id={lesson.id}
+            label={lesson.title}
+            isCompleted={!!lesson.userProgress?.[0]?.isCompleted}
             skillId={skill.id}
-            isLocked={!chapter.isFree && !purchase}
+            isLocked={!lesson.isFree && !purchase}
           />
         ))}
       </div>

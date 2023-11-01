@@ -11,7 +11,7 @@ const { Video } = new Mux(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { skillId: string; chapterId: string } }
+  { params }: { params: { skillId: string; lessonId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -31,21 +31,21 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const chapter = await db.chapter.findUnique({
+    const lesson = await db.lesson.findUnique({
       where: {
-        id: params.chapterId,
+        id: params.lessonId,
         skillId: params.skillId,
       }
     });
 
-    if (!chapter) {
+    if (!lesson) {
       return new NextResponse("Not Found", { status: 404 });
     }
 
-    if (chapter.videoUrl) {
+    if (lesson.videoUrl) {
       const existingMuxData = await db.muxData.findFirst({
         where: {
-          chapterId: params.chapterId,
+          lessonId: params.lessonId,
         }
       });
 
@@ -59,20 +59,20 @@ export async function DELETE(
       }
     }
 
-    const deletedChapter = await db.chapter.delete({
+    const deletedLesson = await db.lesson.delete({
       where: {
-        id: params.chapterId
+        id: params.lessonId
       }
     });
 
-    const publishedChaptersInSkill = await db.chapter.findMany({
+    const publishedLessonsInSkill = await db.lesson.findMany({
       where: {
         skillId: params.skillId,
         isPublished: true,
       }
     });
 
-    if (!publishedChaptersInSkill.length) {
+    if (!publishedLessonsInSkill.length) {
       await db.skill.update({
         where: {
           id: params.skillId,
@@ -83,16 +83,16 @@ export async function DELETE(
       });
     }
 
-    return NextResponse.json(deletedChapter);
+    return NextResponse.json(deletedLesson);
   } catch (error) {
-    console.log("[CHAPTER_ID_DELETE]", error);
+    console.log("[LESSON_ID_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { skillId: string; chapterId: string } }
+  { params }: { params: { skillId: string; lessonId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -113,9 +113,9 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const chapter = await db.chapter.update({
+    const lesson = await db.lesson.update({
       where: {
-        id: params.chapterId,
+        id: params.lessonId,
         skillId: params.skillId,
       },
       data: {
@@ -126,7 +126,7 @@ export async function PATCH(
     if (values.videoUrl) {
       const existingMuxData = await db.muxData.findFirst({
         where: {
-          chapterId: params.chapterId,
+          lessonId: params.lessonId,
         }
       });
 
@@ -147,16 +147,16 @@ export async function PATCH(
 
       await db.muxData.create({
         data: {
-          chapterId: params.chapterId,
+          lessonId: params.lessonId,
           assetId: asset.id,
           playbackId: asset.playback_ids?.[0]?.id,
         }
       });
     }
 
-    return NextResponse.json(chapter);
+    return NextResponse.json(lesson);
   } catch (error) {
-    console.log("[SKILLS_CHAPTER_ID]", error);
+    console.log("[SKILLS_LESSON_ID]", error);
     return new NextResponse("Internal Error", { status: 500 }); 
   }
 }

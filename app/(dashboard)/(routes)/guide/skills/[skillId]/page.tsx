@@ -9,10 +9,10 @@ import { IconBadge } from "@/components/icon-badge";
 import { TitleForm } from "./_components/title-form"
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
-import { CategoryForm } from "./_components/category-form.tsx";
+import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
-import { ChaptersForm } from "./_components/chapters-form";
+import { LessonsForm } from "./_components/lessons-form";
 import { Banner } from "@/components/banner";
 import { Actions } from "./_components/actions";
 
@@ -33,7 +33,7 @@ const SkillPage = async ({
             userId
         },
         include: {
-            chapters: {
+            lessons: {
                 orderBy: {
                     position: "asc",
                 },
@@ -63,7 +63,7 @@ const SkillPage = async ({
         skill.imageUrl,
         skill.price,
         skill.categoryId,
-        skill.chapters.some(chapter => chapter.isPublished),
+        skill.lessons.some(lesson => lesson.isPublished),
     ];
 
     const totalFields = requiredFields.length;
@@ -130,10 +130,10 @@ const SkillPage = async ({
                             <div className="flex items-center gap-x-2">
                                 <IconBadge icon={ListChecks} />
                                 <h2 className="text-wl">
-                                    Skill Chapters
+                                    Skill Lessons
                                 </h2>
                             </div>
-                            <ChaptersForm
+                            <LessonsForm
                                 initialData={skill}
                                 skillId={skill.id}
                 />

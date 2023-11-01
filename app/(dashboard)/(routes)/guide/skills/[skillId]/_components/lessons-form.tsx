@@ -8,7 +8,7 @@ import { Loader2, Pencil, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Chapter, Skill } from "@prisma/client";
+import { Lesson, Skill } from "@prisma/client";
 
 import {
     Form,
@@ -21,10 +21,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { ChaptersList } from "./chapters-list";
+import { LessonsList } from "./lessons-list";
 
-interface ChaptersFormProps {
-    initialData: Skill & {chapters: Chapter[]}
+interface LessonsFormProps {
+    initialData: Skill & {lessons: Lesson[]}
     skillId: string;
 };
 
@@ -33,10 +33,10 @@ const formSchema = z.object({
     });
 
 
-export const ChaptersForm = ({
+export const LessonsForm = ({
     initialData,
     skillId
-    }: ChaptersFormProps) => {
+    }: LessonsFormProps) => {
     const [isCreating, setIsCreating] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
@@ -57,7 +57,7 @@ export const ChaptersForm = ({
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-        await axios.post(`/api/skills/${skillId}/chapters`, values);
+        await axios.post(`/api/skills/${skillId}/lessons`, values);
         toast.success("Skill updated");
         toggleCreating();
         router.refresh();
@@ -70,10 +70,10 @@ export const ChaptersForm = ({
             try {
             setIsUpdating(true);
         
-            await axios.put(`/api/skills/${skillId}/chapters/reorder`, {
+            await axios.put(`/api/skills/${skillId}/lessons/reorder`, {
                 list: updateData
             });
-            toast.success("Chapters reordered");
+            toast.success("Lessons reordered");
             router.refresh();
             } catch {
             toast.error("Something went wrong");
@@ -83,7 +83,7 @@ export const ChaptersForm = ({
         }
 
         const onEdit = (id: string) => {
-            router.push(`/guide/skills/${skillId}/chapters/${id}`) 
+            router.push(`/guide/skills/${skillId}/lessons/${id}`) 
         }
 
     return (
@@ -102,7 +102,7 @@ export const ChaptersForm = ({
             ) : (
                 <>
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Add Chapter
+                Add Lesson
                 </>
             )}
             </Button>
@@ -143,20 +143,20 @@ export const ChaptersForm = ({
         {!isCreating && (
             <div className={cn(
                 "text-sm mt-2",
-                !initialData.chapters.length && "text-slate-500 italic"
+                !initialData.lessons.length && "text-slate-500 italic"
             )}>
-                {!initialData.chapters.length &&
-                "No chapters"}
-                <ChaptersList
+                {!initialData.lessons.length &&
+                "No lessons"}
+                <LessonsList
                     onEdit={onEdit}
                     onReorder={onReorder}
-                    items={initialData.chapters}
+                    items={initialData.lessons}
                 />
             </div>
         )}
         {!isCreating && (
             <p className="text-xs text-muted-forground mt-4">
-                Drag and drop to reorder the chapters
+                Drag and drop to reorder the lessons
             </p>
         )}
         </div>

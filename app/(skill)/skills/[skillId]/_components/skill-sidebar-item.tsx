@@ -27,7 +27,7 @@ export const SkillSidebarItem = ({
     const isActive = pathname?.includes(id);
 
     const onClick = () => {
-        router.push(`/skills/${skillId}/chapters/${id}`);
+        router.push(`/skills/${skillId}/lessons/${id}`);
     }
 
     return (

@@ -13,8 +13,8 @@ import { useConfettiStore } from "@/hooks/use-confetti-store";
 interface VideoPlayerProps {
   playbackId: string;
   skillId: string;
-  chapterId: string;
-  nextChapterId?: string;
+  lessonId: string;
+  nextLessonId?: string;
   isLocked: boolean;
   completeOnEnd: boolean;
   title: string;
@@ -23,8 +23,8 @@ interface VideoPlayerProps {
 export const VideoPlayer = ({
   playbackId,
   skillId,
-  chapterId,
-  nextChapterId,
+  lessonId,
+  nextLessonId,
   isLocked,
   completeOnEnd,
   title,
@@ -36,19 +36,19 @@ export const VideoPlayer = ({
   const onEnd = async () => {
     try {
       if (completeOnEnd) {
-        await axios.put(`/api/skills/${skillId}/chapters/${chapterId}/progress`, {
+        await axios.put(`/api/skills/${skillId}/lessons/${lessonId}/progress`, {
           isCompleted: true,
         });
 
-        if (!nextChapterId) {
+        if (!nextLessonId) {
           confetti.onOpen();
         }
 
         toast.success("Progress updated");
         router.refresh();
 
-        if (nextChapterId) {
-          router.push(`/skills/${skillId}/chapters/${nextChapterId}`)
+        if (nextLessonId) {
+          router.push(`/skills/${skillId}/lessons/${nextLessonId}`)
         }
       }
     } catch {

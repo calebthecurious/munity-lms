@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 
 export async function PUT(
   req: Request,
-  { params }: { params: { skillId: string; chapterId: string } }
+  { params }: { params: { skillId: string; lessonId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -17,9 +17,9 @@ export async function PUT(
 
     const userProgress = await db.userProgress.upsert({
       where: {
-        userId_chapterId: {
+        userId_lessonId: {
           userId,
-          chapterId: params.chapterId,
+          lessonId: params.lessonId,
         }
       },
       update: {
@@ -27,14 +27,14 @@ export async function PUT(
       },
       create: {
         userId,
-        chapterId: params.chapterId,
+        lessonId: params.lessonId,
         isCompleted,
       }
     })
 
     return NextResponse.json(userProgress);
   } catch (error) {
-    console.log("[CHAPTER_ID_PROGRESS]", error);
+    console.log("[LESSON_ID_PROGRESS]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

@@ -7,16 +7,16 @@ import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
 import { Banner } from "@/components/banner";
 
-import { ChapterTitleForm } from "./_components/chapter-title-form";
-import { ChapterDescriptionForm } from "./_components/chapter-description-form";
-import { ChapterAccessForm } from "./_components/chapter-access-form";
-import { ChapterVideoForm } from "./_components/chapter-video-form";
-import { ChapterActions } from "./_components/chapter-actions";
+import { LessonTitleForm } from "./_components/lesson-title-form";
+import { LessonDescriptionForm } from "./_components/lesson-description-form";
+import { LessonAccessForm } from "./_components/lesson-access-form";
+import { LessonVideoForm } from "./_components/lesson-video-form";
+import { LessonActions } from "./_components/lesson-actions";
 
-const ChapterIdPage = async ({
+const LessonIdPage = async ({
   params
 }: {
-  params: { skillId: string; chapterId: string }
+  params: { skillId: string; lessonId: string }
 }) => {
   const { userId } = auth();
 
@@ -24,9 +24,9 @@ const ChapterIdPage = async ({
     return redirect("/");
   }
 
-  const chapter = await db.chapter.findUnique({
+  const lesson = await db.lesson.findUnique({
     where: {
-      id: params.chapterId,
+      id: params.lessonId,
       skillId: params.skillId
     },
     include: {
@@ -34,14 +34,14 @@ const ChapterIdPage = async ({
     },
   });
 
-  if (!chapter) {
+  if (!lesson) {
     return redirect("/")
   }
 
   const requiredFields = [
-    chapter.title,
-    chapter.description,
-    chapter.videoUrl,
+    lesson.title,
+    lesson.description,
+    lesson.videoUrl,
   ];
 
   const totalFields = requiredFields.length;
@@ -53,10 +53,10 @@ const ChapterIdPage = async ({
 
   return (
     <>
-      {!chapter.isPublished && (
+      {!lesson.isPublished && (
         <Banner
           variant="warning"
-          label="This chapter is unpublished. It will not be visible in the skill"
+          label="This lesson is unpublished. It will not be visible in the skill"
         />
       )}
       <div className="p-6">
@@ -78,11 +78,11 @@ const ChapterIdPage = async ({
                   Complete all fields {completionText}
                 </span>
               </div>
-              <ChapterActions
+              <LessonActions
                 disabled={!isComplete}
                 skillId={params.skillId}
-                chapterId={params.chapterId}
-                isPublished={chapter.isPublished}
+                lessonId={params.lessonId}
+                isPublished={lesson.isPublished}
               />
             </div>
           </div>
@@ -93,18 +93,18 @@ const ChapterIdPage = async ({
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={LayoutDashboard} />
                 <h2 className="text-xl">
-                  Customize your chapter
+                  Customize your lesson
                 </h2>
               </div>
-              <ChapterTitleForm
-                initialData={chapter}
+              <LessonTitleForm
+                initialData={lesson}
                 skillId={params.skillId}
-                chapterId={params.chapterId}
+                lessonId={params.lessonId}
               />
-              <ChapterDescriptionForm
-                initialData={chapter}
+              <LessonDescriptionForm
+                initialData={lesson}
                 skillId={params.skillId}
-                chapterId={params.chapterId}
+                lessonId={params.lessonId}
               />
             </div>
             <div>
@@ -114,10 +114,10 @@ const ChapterIdPage = async ({
                   Access Settings
                 </h2>
               </div>
-              <ChapterAccessForm
-                initialData={chapter}
+              <LessonAccessForm
+                initialData={lesson}
                 skillId={params.skillId}
-                chapterId={params.chapterId}
+                lessonId={params.lessonId}
               />
             </div>
           </div>
@@ -128,16 +128,16 @@ const ChapterIdPage = async ({
                 Add a video
               </h2>
             </div>
-            <ChapterVideoForm
-              initialData={chapter}
-              chapterId={params.chapterId}
+            <LessonVideoForm
+              initialData={lesson}
+              lessonId={params.lessonId}
               skillId={params.skillId}
             />
           </div>
         </div>
       </div>
     </>
-   );
+  );
 }
- 
-export default ChapterIdPage;
+
+export default LessonIdPage;

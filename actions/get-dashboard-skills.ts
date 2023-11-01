@@ -1,11 +1,11 @@
-import { Category, Chapter, Skill } from "@prisma/client";
+import { Category, Lesson, Skill } from "@prisma/client";
 
 import { db } from "@/lib/db";
 import { getProgress } from "@/actions/get-progress";
 
 type SkillWithProgressWithCategory = Skill & {
   category: Category;
-  chapters: Chapter[];
+  lessons: Lesson[];
   progress: number | null;
 };
 
@@ -24,7 +24,7 @@ export const getDashboardSkills = async (userId: string): Promise<DashboardSkill
             skill: {
             include: {
                 category: true,
-                chapters: {
+                lessons: {
                 where: {
                     isPublished: true,
                 }

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { skillId: string; chapterId: string } }
+  { params }: { params: { skillId: string; lessonId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -25,37 +25,36 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const unpublishedChapter = await db.chapter.update({
+    const lesson = await db.lesson.findUnique({
       where: {
-        id: params.chapterId,
+        id: params.lessonId,
         skillId: params.skillId,
-      },
-      data: {
-        isPublished: false,
       }
     });
 
-    const publishedChaptersInSkill = await db.chapter.findMany({
+    const muxData = await db.muxData.findUnique({
       where: {
+        lessonId: params.lessonId,
+      }
+    });
+
+    if (!lesson || !muxData || !lesson.title || !lesson.description || !lesson.videoUrl) {
+      return new NextResponse("Missing required fields", { status: 400 });
+    }
+
+    const publishedLesson = await db.lesson.update({
+      where: {
+        id: params.lessonId,
         skillId: params.skillId,
+      },
+      data: {
         isPublished: true,
       }
     });
 
-    if (!publishedChaptersInSkill.length) {
-      await db.skill.update({
-        where: {
-          id: params.skillId,
-        },
-        data: {
-          isPublished: false,
-        }
-      });
-    }
-
-    return NextResponse.json(unpublishedChapter);
+    return NextResponse.json(publishedLesson);
   } catch (error) {
-    console.log("[CHAPTER_UNPUBLISH]", error);
+    console.log("[LESSON_PUBLISH]", error);
     return new NextResponse("Internal Error", { status: 500 }); 
   }
 }

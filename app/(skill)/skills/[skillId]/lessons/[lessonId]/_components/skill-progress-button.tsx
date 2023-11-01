@@ -10,17 +10,17 @@ import { Button } from "@/components/ui/button";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 interface SkillProgressButtonProps {
-  chapterId: string;
+  lessonId: string;
   skillId: string;
   isCompleted?: boolean;
-  nextChapterId?: string;
+  nextLessonId?: string;
 };
 
 export const SkillProgressButton = ({
-  chapterId,
+  lessonId,
   skillId,
   isCompleted,
-  nextChapterId
+  nextLessonId
 }: SkillProgressButtonProps) => {
   const router = useRouter();
   const confetti = useConfettiStore();
@@ -30,16 +30,16 @@ export const SkillProgressButton = ({
     try {
       setIsLoading(true);
 
-      await axios.put(`/api/skills/${skillId}/chapters/${chapterId}/progress`, {
+      await axios.put(`/api/skills/${skillId}/lessons/${lessonId}/progress`, {
         isCompleted: !isCompleted
       });
 
-      if (!isCompleted && !nextChapterId) {
+      if (!isCompleted && !nextLessonId) {
         confetti.onOpen();
       }
 
-      if (!isCompleted && nextChapterId) {
-        router.push(`/skills/${skillId}/chapters/${nextChapterId}`);
+      if (!isCompleted && nextLessonId) {
+        router.push(`/skills/${skillId}/lessons/${nextLessonId}`);
       }
 
       toast.success("Progress updated");

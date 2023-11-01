@@ -28,7 +28,7 @@ export async function PUT(
         }
 
         for (let item of list) {
-        await db.chapter.update({
+        await db.lesson.update({
             where: { id: item.id },
             data: { position: item.position }
         });

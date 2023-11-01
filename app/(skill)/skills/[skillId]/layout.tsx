@@ -24,7 +24,7 @@ const SkillLayout = async ({
             id: params.skillId,
         },
         include: {
-            chapters: {
+            lessons: {
                 where: {
                     isPublished: true
                 },

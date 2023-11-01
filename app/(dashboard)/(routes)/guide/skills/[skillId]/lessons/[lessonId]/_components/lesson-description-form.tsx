@@ -8,12 +8,11 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Chapter } from "@prisma/client";
+import { Lesson } from "@prisma/client";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -22,24 +21,23 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Editor } from "@/components/editor";
 import { Preview } from "@/components/preview";
-import { Checkbox } from "@/components/ui/checkbox";
 
-interface ChapterAccessFormProps {
-    initialData: Chapter
+interface LessonDescriptionFormProps {
+    initialData: Lesson
     skillId: string;
-    chapterId: string;  
+    lessonId: string;  
     
 };
 
 const formSchema = z.object({
-    isFree: z.boolean().default(false)
+    description: z.string().min(1)
 });
 
-export const ChapterAccessForm = ({
+export const LessonDescriptionForm = ({
     initialData,
     skillId,
-    chapterId,
-    }: ChapterAccessFormProps) => {
+    lessonId,
+    }: LessonDescriptionFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const toggleEdit = () => setIsEditing((current) => !current);
@@ -49,7 +47,7 @@ export const ChapterAccessForm = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            isFree: !!initialData.isFree
+            description: initialData?.description || ""
         },
     });
 
@@ -57,8 +55,8 @@ export const ChapterAccessForm = ({
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-        await axios.patch(`/api/skills/${skillId}/chapters/${chapterId}`, values);
-        toast.success("Chapter updated");
+        await axios.patch(`/api/skills/${skillId}/lessons/${lessonId}`, values);
+        toast.success("Lesson updated");
         toggleEdit();
         router.refresh();
         } catch {
@@ -69,29 +67,30 @@ export const ChapterAccessForm = ({
     return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
         <div className="font-medium flex items-center justify-between">
-            Chapter access settings
+            Lesson Description
             <Button onClick={toggleEdit} variant="ghost">
             {isEditing ? (
                 <>Cancel</>
             ) : (
                 <>
                 <Pencil className="h-4 w-4 mr-2" />
-                Edit access
+                Edit title
                 </>
             )}
             </Button>
         </div>
         {!isEditing && (
-        <p className={cn(
+        <div className={cn(
           "text-sm mt-2",
-          !initialData.isFree && "text-slate-500 italic"
+          !initialData.description && "text-slate-500 italic"
         )}>
-            {initialData.isFree ? (
-                <>This chapter is free</>
-            ): (
-                <>This chapter is not free</>
-            )}
-        </p>
+          {!initialData.description && "No description"}
+          {initialData.description && (
+            <Preview
+              value={initialData.description}
+            />
+          )}
+        </div>
       )}
         {isEditing && (
             <Form {...form}>
@@ -101,20 +100,15 @@ export const ChapterAccessForm = ({
             >
         <FormField
                 control={form.control}
-                name="isFree"
+                name="description"
                 render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                        <FormControl>
-                            <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                            />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                            <FormDescription>
-                                Check this box if you want to make this chapter free
-                            </FormDescription>
-                        </div>
+                    <FormItem>
+                    <FormControl>
+                        <Editor
+                        {...field}
+                    />
+                    </FormControl>
+                    <FormMessage />
                     </FormItem>
                 )}
                 />

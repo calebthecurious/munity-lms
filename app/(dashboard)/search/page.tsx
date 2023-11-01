@@ -31,8 +31,9 @@ const SearchPage = async ({
     });
 
     const skills = await getSkills({
-        userId
-    })
+        userId,
+        ...searchParams,
+    });
 
     return (
         <>
@@ -51,5 +52,5 @@ const SearchPage = async ({
         </>
     );
 }
- 
+
 export default SearchPage;

@@ -4,7 +4,7 @@ import { SkillCard } from "@/components/skill-card";
 
 type SkillWithProgressWithCategory = Skill & {
   category: Category | null;
-  chapters: { id: string }[];
+  lessons: { id: string }[];
   progress: number | null;
 };
 
@@ -24,7 +24,7 @@ export const SkillsList = ({
             id={item.id}
             title={item.title}
             imageUrl={item.imageUrl!}
-            chaptersLength={item.chapters.length}
+            lessonsLength={item.lessons.length}
             price={item.price!}
             progress={item.progress}
             category={item?.category?.name!}

@@ -11,7 +11,7 @@ const SkillIdPage = async ({
             id: params.skillId,
         },
         include: {
-            chapters: {
+            lessons: {
                 where: {
                     isPublished: true
                 },
@@ -26,7 +26,7 @@ const SkillIdPage = async ({
         return redirect("/");
     }
     
-    return redirect(`/skills/${skill.id}/chapters/${skill.chapters[0].id}`)
+    return redirect(`/skills/${skill.id}/lessons/${skill.lessons[0].id}`)
 
 }
 

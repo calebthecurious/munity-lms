@@ -25,7 +25,7 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const lastChapter = await db.chapter.findFirst({
+        const lastLesson = await db.lesson.findFirst({
             where: {
                 skillId: params.skillId,
                 },
@@ -34,9 +34,9 @@ export async function POST(
                 },
             });
         
-            const newPosition = lastChapter ? lastChapter.position + 1 : 1;
+            const newPosition = lastLesson ? lastLesson.position + 1 : 1;
         
-            const chapter = await db.chapter.create({
+            const lesson = await db.lesson.create({
                 data: {
                 title,
                 skillId: params.skillId,
@@ -44,10 +44,10 @@ export async function POST(
                 }
             });
         
-            return NextResponse.json(chapter);
+            return NextResponse.json(lesson);
 
     } catch (error) {
-        console.log("[CHAPTERS", error);
+        console.log("[LESSONS", error);
         return new NextResponse("Internal Error", { status: 500 })
     }
 }

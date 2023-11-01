@@ -1,4 +1,4 @@
-import { Chapter, Skill, UserProgress } from "@prisma/client"
+import { Lesson, Skill, UserProgress } from "@prisma/client"
 
 import { NavbarRoutes } from "@/components/navbar-routes";
 
@@ -6,7 +6,7 @@ import { SkillMobileSidebar } from "./skill-mobile-sidebar";
 
 interface SkillNavbarProps {
   skill: Skill & {
-    chapters: (Chapter & {
+    lessons: (Lesson & {
       userProgress: UserProgress[] | null;
     })[];
   };
